@@ -24,3 +24,21 @@ label{display:block;font-size:12px;color:var(--m);margin:10px 0 0}label input,la
 #lk div{background:var(--c);padding:24px;border-radius:18px;width:100%;max-width:340px;text-align:center}
 #lk input{text-align:center;font-size:22px;letter-spacing:8px;margin-top:10px}
 .x{background:none;border:0;color:var(--r);font-size:18px;min-width:36px;min-height:36px}
+
+#vt{font-size:12px;border:1px solid #fff8;border-radius:8px;padding:6px 10px}
+header div{display:flex;gap:8px;align-items:center}
+/* ===== Tampilan Desktop (otomatis >=900px atau dipilih manual) ===== */
+.desk body{padding:0 0 0 230px}
+.desk header{padding:14px 28px}.desk header h1{font-size:20px}
+.desk nav{top:0;bottom:0;right:auto;width:230px;flex-direction:column;justify-content:flex-start;padding:76px 12px 12px;border-top:0;border-right:1px solid var(--b)}
+.desk nav::before{content:"💰 Keuangan";position:absolute;top:18px;left:24px;font-weight:700;font-size:18px;color:var(--p)}
+.desk nav button{flex:none;display:flex;align-items:center;gap:12px;text-align:left;font-size:15px;min-height:0;padding:13px 16px;border-radius:10px;margin-bottom:4px}
+.desk nav button span{display:inline;font-size:20px}.desk nav .on{background:var(--bg)}
+.desk main{max-width:1100px;padding:24px 28px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+.desk main>*{margin:0}.desk main>.full{grid-column:1/-1}
+.desk .filt{grid-template-columns:repeat(4,1fr)}
+.desk .ch{height:340px}.desk .big{font-size:32px}
+.desk .fab{right:32px;bottom:32px}
+.desk .sheet{align-items:center;padding:20px}
+.desk .box{max-width:520px;border-radius:18px;max-height:85vh}
+.desk .card[onclick],.desk .row[onclick]{cursor:pointer}.desk .row[onclick]:hover{background:var(--bg)}

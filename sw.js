@@ -1,4 +1,4 @@
-const V='akt-v1';
+const V='akt-v2';
 const LOCAL=['./','index.html','css/style.css','js/app.js','manifest.json','icons/icon-192.png','icons/icon-512.png'];
 const CDN=['https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js','https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.wasm','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js','https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>Promise.all([c.addAll(LOCAL),...CDN.map(u=>c.add(u).catch(()=>{}))])).then(()=>self.skipWaiting()))});

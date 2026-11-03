@@ -48,21 +48,21 @@ const budgets=()=>q('SELECT b.*,c.name cn FROM budgets b LEFT JOIN categories c 
 let view='dash',F={m:iso(new Date()).slice(0,7),t:'',a:'',c:''},charts=[];const main=$('main');
 const V={
 dash(){const m=iso(new Date()).slice(0,7),B=bal(),tot=B.reduce((s,a)=>s+a.b,0);
-main.innerHTML=`<div class="card"><h2>Total Saldo</h2><div class="big">${R(tot)}</div><div class="g2" style="margin-top:10px"><div><span class="m">Pemasukan bulan ini</span><br><b class="inc">${R(sumM(m,'income'))}</b></div><div><span class="m">Pengeluaran bulan ini</span><br><b class="exp">${R(sumM(m,'expense'))}</b></div></div></div>
+main.innerHTML=`<div class="card full"><h2>Total Saldo</h2><div class="big">${R(tot)}</div><div class="g2" style="margin-top:10px"><div><span class="m">Pemasukan bulan ini</span><br><b class="inc">${R(sumM(m,'income'))}</b></div><div><span class="m">Pengeluaran bulan ini</span><br><b class="exp">${R(sumM(m,'expense'))}</b></div></div></div>
 <div class="card"><h2>Akun</h2>${B.map(a=>`<div class="row"><span>${E(a.name)}</span><b>${R(a.b)}</b></div>`).join('')}</div>
-<h2 style="font-size:14px;color:var(--m);margin:4px 4px 8px">Budget Aktif</h2>${budgets().filter(b=>b.is_active).map(b=>bcard(b)).join('')||'<div class="card m">Belum ada budget.</div>'}`},
+<h2 class="full" style="font-size:14px;color:var(--m);margin:4px 4px 0">Budget Aktif</h2>${budgets().filter(b=>b.is_active).map(b=>bcard(b)).join('')||'<div class="card m full">Belum ada budget.</div>'}`},
 tx(){const A=q('SELECT * FROM accounts'),C=q('SELECT * FROM categories');
 let w=["substr(transaction_date,1,7)=?"],p=[F.m];if(F.t){w.push('t.type=?');p.push(F.t)}if(F.a){w.push('(account_id=? OR to_account_id=?)');p.push(F.a,F.a)}if(F.c){w.push('category_id=?');p.push(F.c)}
 const L=q(`SELECT t.*,a.name an,b.name bn,c.name cn,c.icon ci FROM transactions t JOIN accounts a ON a.id=account_id LEFT JOIN accounts b ON b.id=to_account_id LEFT JOIN categories c ON c.id=category_id WHERE ${w.join(' AND ')} ORDER BY transaction_date DESC,t.id DESC`,p);
-main.innerHTML=`<div class="card"><div class="g2"><input type="month" id="fm" value="${F.m}"><select id="ft"><option value="">Semua jenis</option><option value="income">Pemasukan</option><option value="expense">Pengeluaran</option><option value="transfer">Transfer</option></select><select id="fa">${opt(A,F.a,'Semua akun')}</select><select id="fc">${opt(C,F.c,'Semua kategori')}</select></div></div>
-<div class="card">${L.map(t=>`<div class="row" onclick="txForm(${t.id})"><div><b>${t.type=='transfer'?'🔁 '+E(t.an)+' → '+E(t.bn):(t.ci||'')+' '+E(t.cn||'-')}</b><div class="m">${t.transaction_date} · ${t.type=='transfer'?'Transfer':E(t.an)}${t.note?' · '+E(t.note):''}</div></div><div style="text-align:right"><b class="${t.type=='income'?'inc':t.type=='expense'?'exp':''}">${t.type=='expense'?'-':t.type=='income'?'+':''}${R(t.amount)}</b><button class="x" onclick="event.stopPropagation();delTx(${t.id})">🗑</button></div></div>`).join('')||'<div class="m">Tidak ada transaksi.</div>'}</div>
+main.innerHTML=`<div class="card full"><div class="g2 filt"><input type="month" id="fm" value="${F.m}"><select id="ft"><option value="">Semua jenis</option><option value="income">Pemasukan</option><option value="expense">Pengeluaran</option><option value="transfer">Transfer</option></select><select id="fa">${opt(A,F.a,'Semua akun')}</select><select id="fc">${opt(C,F.c,'Semua kategori')}</select></div></div>
+<div class="card full">${L.map(t=>`<div class="row" onclick="txForm(${t.id})"><div><b>${t.type=='transfer'?'🔁 '+E(t.an)+' → '+E(t.bn):(t.ci||'')+' '+E(t.cn||'-')}</b><div class="m">${t.transaction_date} · ${t.type=='transfer'?'Transfer':E(t.an)}${t.note?' · '+E(t.note):''}</div></div><div style="text-align:right"><b class="${t.type=='income'?'inc':t.type=='expense'?'exp':''}">${t.type=='expense'?'-':t.type=='income'?'+':''}${R(t.amount)}</b><button class="x" onclick="event.stopPropagation();delTx(${t.id})">🗑</button></div></div>`).join('')||'<div class="m">Tidak ada transaksi.</div>'}</div>
 <button class="btn fab" onclick="txForm()">＋</button>`;$('#ft').value=F.t;
 [['fm','m'],['ft','t'],['fa','a'],['fc','c']].forEach(([i,k])=>$('#'+i).onchange=e=>{F[k]=e.target.value;V.tx()})},
-bud(){main.innerHTML=(budgets().map(b=>bcard(b,1)).join('')||'<div class="card m">Belum ada budget. Tekan ＋ untuk membuat.</div>')+`<button class="btn fab" onclick="budForm()">＋</button>`},
+bud(){main.innerHTML=(budgets().map(b=>bcard(b,1)).join('')||'<div class="card m full">Belum ada budget. Tekan ＋ untuk membuat.</div>')+`<button class="btn fab" onclick="budForm()">＋</button>`},
 rep(){const m=F.rm||iso(new Date()).slice(0,7);F.rm=m;
 const ex=q("SELECT c.name,c.color_code col,SUM(t.amount) s FROM transactions t JOIN categories c ON c.id=category_id WHERE t.type='expense' AND substr(transaction_date,1,7)=? GROUP BY c.id ORDER BY s DESC",[m]);
 const ms=[];let d=new Date(m+'-01');for(let i=5;i>=0;i--){ms.push(iso(new Date(d.getFullYear(),d.getMonth()-i,1)).slice(0,7))}
-main.innerHTML=`<div class="card"><input type="month" id="rm" value="${m}"></div><div class="card"><h2>Pengeluaran per Kategori</h2>${ex.length?'<div class="ch"><canvas id="c1"></canvas></div>':'<div class="m">Belum ada data.</div>'}</div><div class="card"><h2>Pemasukan vs Pengeluaran (6 bulan)</h2><div class="ch"><canvas id="c2"></canvas></div></div>`;
+main.innerHTML=`<div class="card full"><input type="month" id="rm" value="${m}"></div><div class="card"><h2>Pengeluaran per Kategori</h2>${ex.length?'<div class="ch"><canvas id="c1"></canvas></div>':'<div class="m">Belum ada data.</div>'}</div><div class="card"><h2>Pemasukan vs Pengeluaran (6 bulan)</h2><div class="ch"><canvas id="c2"></canvas></div></div>`;
 $('#rm').onchange=e=>{F.rm=e.target.value;V.rep()};
 const leg={position:'bottom',labels:{boxWidth:12,font:{size:11}}},base={responsive:true,maintainAspectRatio:false};
 if(ex.length)charts.push(new Chart($('#c1'),{type:'doughnut',data:{labels:ex.map(x=>x.name),datasets:[{data:ex.map(x=>x.s),backgroundColor:ex.map(x=>x.col)}]},options:{...base,plugins:{legend:leg,tooltip:{callbacks:{label:c=>c.label+': '+R(c.raw)}}}}}));
@@ -122,6 +122,11 @@ const M=q("SELECT DISTINCT substr(transaction_date,1,7) m FROM transactions ORDE
 [['Detail Transaksi',T],['Ringkasan Budget',Bd],['Ringkasan Bulanan',M]].forEach(([n,d])=>XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(d),n));
 XLSX.writeFile(wb,'akuntansi-'+iso(new Date())+'.xlsx')}
 const bk=()=>dl(new Blob([db.export()],{type:'application/x-sqlite3'}),'akuntansi-'+iso(new Date())+'.sqlite');
+// ===== Tampilan: Auto / Desktop / Mobile =====
+const mq=matchMedia('(min-width:900px)');
+function applyView(){const m=localStorage.vm||'auto';document.documentElement.classList.toggle('desk',m=='desktop'||(m=='auto'&&mq.matches));$('#vt').textContent={auto:'🔄 Auto',desktop:'🖥️ Desktop',mobile:'📱 Mobile'}[m]}
+function toggleView(){const o=['auto','desktop','mobile'];localStorage.vm=o[(o.indexOf(localStorage.vm||'auto')+1)%3];applyView();if(!$('#app').hidden)go(view)}
+mq.onchange=()=>{applyView();if(!$('#app').hidden)go(view)};applyView();
 // ===== Init =====
 (async()=>{SQL=await initSqlJs({locateFile:f=>'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/'+f});
 const d=await idbGet();if(d){db=new SQL.Database(d);try{db.run('ALTER TABLE budgets ADD COLUMN auto_renew INTEGER DEFAULT 0')}catch(_){}}else{db=new SQL.Database();seed();await save()}

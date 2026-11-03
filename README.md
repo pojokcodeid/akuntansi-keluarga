@@ -9,6 +9,7 @@ Aplikasi web pencatat keuangan keluarga. 100% di sisi klien: SQLite (sql.js/WebA
 - Input nominal berformat titik ribuan otomatis
 - Grafik pie & bar yang responsif di mobile
 - Ekspor Excel (3 sheet), backup/restore `.sqlite`
+- Tampilan responsif: layout Mobile (navigasi bawah) dan Desktop (sidebar, grid 2 kolom, dialog tengah). Otomatis mengikuti lebar layar (>=900px), bisa dipaksa lewat tombol Auto/Desktop/Mobile di header
 - PWA: bisa di-install dan jalan offline setelah kunjungan pertama
 
 ## Struktur
